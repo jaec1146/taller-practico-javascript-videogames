@@ -19,6 +19,7 @@ canvas {
   border: 4px solid #ff6600;
   border-radius: 8px;
   background-color: #feff9d;
+  box-sizing: content-box;
 }
 
 .btns {
