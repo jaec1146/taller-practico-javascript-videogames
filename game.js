@@ -5,12 +5,20 @@ const btnUp = document.querySelector('#up');
 const btnDown = document.querySelector('#down');
 const btnLeft = document.querySelector('#left');
 const btnRight = document.querySelector('#right');
+const spanLives = document.querySelector('#lives');
+const spanTime = document.querySelector("#time");
+const spanRecord = document.querySelector("#record");
+const pResult = document.querySelector("#result");
 
 let canvasSize;
 let elementsSize;
 let level = 0;
 let lives = 3;
 
+let timeStart;
+let timePlayer;
+let timeInterval;
+let record;
 
 
 playerPosition = {
@@ -43,11 +51,15 @@ function setCanvasSize() {
         canvasSize = window.innerHeight * 0.5;
     }
 
+    canvasSize = Number(canvasSize.toFixed(0));
+
     canvas.setAttribute('width', canvasSize)
     canvas.setAttribute('height', canvasSize)
 
     elementsSize = (canvasSize / 10.8);
     
+    playerPosition.x = undefined;
+    playerPosition.y = undefined;
     startGame();
 }
 
@@ -63,6 +75,13 @@ function startGame() {
         gameWin();
         return;
     }
+
+    if (!timeStart) {
+        timeStart = Date.now();
+        timeInterval = setInterval(showTime, 100)
+        showRecord();
+    }
+
     const mapRows = map.trim().split('\n'); 
     const mapRowsCols = mapRows.map(row => row.trim().split(''));
 
@@ -73,6 +92,8 @@ function startGame() {
         //     }
         // }  
     }
+
+    showLives();
 
     enemyPositions = [];
     game.clearRect(0, 0, canvasSize, canvasSize);
@@ -195,17 +216,52 @@ function levelWin() {
 
 function levelFail() {
     lives--;
+
+
     if (lives <= 0) {
         level = 0;
         lives = 3;
+        timeStart = undefined;
     }
+
     playerPosition.x = undefined
     playerPosition.y = undefined
     startGame()
 }
 
 function gameWin() {
-    alert('Terminaste');
+    console.log('Terminaste');
+    clearInterval(timeInterval);
+    const recordTime = localStorage.getItem('record_time');
+    const playerTime = Date.now() - timeStart;
+    if (recordTime) {
+        if (recordTime >= playerTime) {
+            localStorage.setItem('record_time', playerTime)
+            pResult.innerHTML = 'Superaste el record 🎉🏆';
+        } else {
+            pResult.innerHTML = 'No superaste el record 😕';
+        }
+    } else {
+        localStorage.setItem('record_time', playerTime);
+        pResult.innerHTML = 'Primer vez!, muy bien!!👍..., superalo!';
+    }
+    console.log({recordTime,playerTime});
+}
+
+function showLives() {
+    const heartsArray=Array(lives).fill(emojis['HEART']) 
+
+    spanLives.innerHTML = '';
+    heartsArray.forEach(heart => spanLives.append(heart));
+}
+
+function showTime() {
+    spanTime.innerHTML = Date.now() - timeStart;
+
+}
+
+function showRecord() {
+    spanRecord.innerHTML = localStorage.getItem('record_time');
 }
 
 window.addEventListener('keydown',moveByKeys)
