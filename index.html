@@ -9,8 +9,7 @@
 </head>
 <body>
   <div class="game-container">
-    <canvas id="game"></canvas>
-    
+    <canvas id="game"></span></canvas>
     <div class="btns">
       <button id="up">Arriba</button>
       <button id="left">Izquierda</button>
@@ -21,12 +20,20 @@
     <div class="messages">
       <!-- TODO -->
       <p>Vidas:<span id = "lives"></span></p>
-      <p>Time ⏱️: <span id = "time"></span> </p>
-      <p>Record 🏆: <span id= "record"></span></p>
-    <p id = "result"></p>
+      <p>Time ⏱️: <span class = "time"></span> </p>
+      <p>Record 🏆: <span class= "record"></span></p>
+    
     </div>
+    <span class="restart">
+      <p id = "result"></p>
+      <p>Record 🏆: <span class = "recordShow"></span></p>
+      <br>
+      <button id="btnRestart"><h3>Restart</h3></button>
+      <br>
+      <p>Time ⏱️: <span class = "timeShow"></span> </p>
+    </span>
   </div>
-
+  
   <script src="./maps.js"></script>
   <script src="./game.js"></script>
 </body>

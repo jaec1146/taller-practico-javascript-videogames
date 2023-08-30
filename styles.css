@@ -61,3 +61,30 @@ p {
   button { margin-top: 25px; }
   #up, #down { margin-left: 100%; margin-right: 100%; }
 }
+
+.restart{
+  z-index: 1;
+  position:fixed;
+  display:none;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  color: black;
+  background-color: aliceblue;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: 10s;
+}
+
+button:hover{
+  background: #ff6600;
+  color: white ;
+}
+
+.show{
+  display: flex;
+  opacity: 1;
+}
+

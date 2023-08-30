@@ -6,9 +6,14 @@ const btnDown = document.querySelector('#down');
 const btnLeft = document.querySelector('#left');
 const btnRight = document.querySelector('#right');
 const spanLives = document.querySelector('#lives');
-const spanTime = document.querySelector("#time");
-const spanRecord = document.querySelector("#record");
+const spanTime = document.querySelector(".time");
+const spanRecord = document.querySelector(".record");
 const pResult = document.querySelector("#result");
+const restart = document.querySelector(".restart");
+const btnRestart = document.querySelector("#btnRestart");
+const timeShow = document.querySelector(".timeShow");
+const recordShow = document.querySelector(".recordShow");
+
 
 let canvasSize;
 let elementsSize;
@@ -19,7 +24,6 @@ let timeStart;
 let timePlayer;
 let timeInterval;
 let record;
-
 
 playerPosition = {
     x:undefined,
@@ -84,7 +88,7 @@ function startGame() {
 
     const mapRows = map.trim().split('\n'); 
     const mapRowsCols = mapRows.map(row => row.trim().split(''));
-
+    console.log({mapRows :mapRows ,mapRowsCols:mapRowsCols})
     { /* alineación de elementos de arrays para mostrar emojis con ciclo for */
         // for (let row = 1; row <= 10; row++) {
         //     for (let column = 1; column <= 10; column++){
@@ -139,11 +143,15 @@ function movePlayer() {
     const enemyCollision = enemyPositions.find(enemy => {
         const enemyCollisionX = enemy.x.toFixed(3) == playerPosition.x.toFixed(3);
         const enemyCollisionY = enemy.y.toFixed(3) == playerPosition.y.toFixed(3);
-        return enemyCollisionX && enemyCollisionY;
-    });
+        if (enemyCollisionX && enemyCollisionY) {
+            enemyBurst(enemy.x, enemy.y)
+        }
 
-    if (enemyCollision) {
-        levelFail()
+        return enemyCollisionX && enemyCollisionY;
+    })
+        
+    if( enemyCollision ) {
+        levelFail();
     }
 
     game.fillText(emojis['PLAYER'], playerPosition.x, playerPosition.y );
@@ -217,7 +225,7 @@ function levelWin() {
 function levelFail() {
     lives--;
 
-
+    
     if (lives <= 0) {
         level = 0;
         lives = 3;
@@ -245,7 +253,8 @@ function gameWin() {
         localStorage.setItem('record_time', playerTime);
         pResult.innerHTML = 'Primer vez!, muy bien!!👍..., superalo!';
     }
-    console.log({recordTime,playerTime});
+    console.log({ recordTime, playerTime });
+    showRestartGame();
 }
 
 function showLives() {
@@ -264,8 +273,44 @@ function showRecord() {
     spanRecord.innerHTML = localStorage.getItem('record_time');
 }
 
+function showRestartGame() {
+    restart.classList.add('show');
+    const playerTime = Date.now() - timeStart;
+    recordShow.innerHTML = spanTime.innerText; 
+    timeShow.innerHTML = playerTime;
+}
+
+function reloadGame() {
+    location.reload();
+}
+
+function showBreakHeart() {
+    game.font = "150px Impact";
+    game.fillText("💔", 200, 200)
+    game.font = elementsSize + 'px Impact';
+}
+
+function enemyBurst(x, y) {
+    console.log(lives)
+    if (lives > 1) {
+        setTimeout(() => {
+            game.clearRect(x-20, y-27, 35, 32)
+        }, 0)
+        setTimeout(
+            () => {
+                game.fillText(emojis['BURST'], x, y);
+            },
+            0
+        )
+        setTimeout(() => {
+            showBreakHeart();    
+        },0) 
+    }
+}
+
 window.addEventListener('keydown',moveByKeys)
 btnUp.addEventListener('click',moveUp);
 btnDown.addEventListener('click',moveDown);
 btnLeft.addEventListener('click',moveLeft);
 btnRight.addEventListener('click', moveRight);
+btnRestart.addEventListener('click', reloadGame);
